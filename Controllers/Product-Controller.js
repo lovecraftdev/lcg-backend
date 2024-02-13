@@ -1,3 +1,7 @@
+// image,
+// image,
+// handle,
+// handle,
 import Product from "../Models/ProductModel.js";
 
 export const addProduct = async (req, res) => {
@@ -5,48 +9,67 @@ export const addProduct = async (req, res) => {
     const {
       title,
       description,
-      media,
-      category,
-      type,
       price,
-      manufacturingPrice,
-      weight,
-      volumetricWeight,
-      tags,
+      category,
+      comparePrice,
       chargeTax,
-      published,
+      productCategory,
+      productType,
+      vendor,
+      tags,
     } = req.body;
 
-    // Create a new product instance using the Product model
-    const newProduct = new Product({
+    const savedProduct = await Product.create({
       title,
       description,
-      media,
-      category,
-      type,
       price,
-      manufacturingPrice,
-      weight,
-      volumetricWeight,
-      tags,
+      category,
+      comparePrice,
       chargeTax,
-      published,
+      productCategory,
+      productType,
+      vendor,
+      tags,
     });
 
-    // Save the product to the database
-    await newProduct.save();
-
-    // Send a success response
     res
       .status(201)
-      .json({
-        success: true,
-        message: "Product added successfully",
-        product: newProduct,
-      });
+      .json({ message: "Product Added Successfully", savedProduct });
   } catch (error) {
-    // Handle any errors and send an error response
     console.error("Error adding product:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const addVariantToProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { size, color, stock } = req.body;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const newVariant = {
+      size,
+      color,
+      stock,
+    };
+
+    product.variants.push(newVariant);
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Variant added to the product",
+      product,
+    });
+  } catch (error) {
+    console.error("Error adding variant:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
