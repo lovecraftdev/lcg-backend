@@ -1,6 +1,8 @@
 import {
   addProduct,
   addVariantToProduct,
+  getAllProducts,
+  getProductById,
 } from "../Controllers/Product-Controller.js";
 import Product from "../Models/ProductModel.js";
 import express from "express";
@@ -8,6 +10,11 @@ import express from "express";
 const router = express.Router();
 
 router.post("/add-product", addProduct);
+
+router.get("/allProducts", getAllProducts);
+
+router.get("/getProduct/:id", getProductById);
+
 router.post("/add-variants-options/:productId", async (req, res) => {
   try {
     const { productId } = req.params;

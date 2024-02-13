@@ -1,7 +1,3 @@
-// image,
-// image,
-// handle,
-// handle,
 import Product from "../Models/ProductModel.js";
 
 export const addProduct = async (req, res) => {
@@ -70,6 +66,36 @@ export const addVariantToProduct = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding variant:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+//Get all products
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+//Get By ID
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findOne({ _id: id });
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
