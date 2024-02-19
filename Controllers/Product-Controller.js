@@ -99,3 +99,52 @@ export const getProductById = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+//Add Variant to Product
+export const addVariant = async (req, res) => {
+  try {
+    const productId = req.body.productId;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const { title, price, sku } = req.body;
+
+    const newVariant = {
+      title,
+      price,
+      sku,
+    };
+
+    product.variants.push(newVariant);
+
+    await product.save();
+
+    return res
+      .status(201)
+      .json({ message: "Variant added successfully", product });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//get products pagination
+export const getProductByPagination = async (req, res) => {
+  const { page } = req.query;
+  const pageSize = 50;
+
+  try {
+    const startIndex = (page - 1) * pageSize;
+
+    const paginatedData = await Product.find().skip(startIndex).limit(pageSize);
+
+    res.json(paginatedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};

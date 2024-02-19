@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 
 const variationSchema = new mongoose.Schema(
   {
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      // required: true,
+    },
     title: { type: String, required: true },
-    price: { type: String, required: true },
+    price: { type: Number, required: true },
     sku: { type: String, required: true },
   },
   { timestamps: true }
@@ -12,27 +17,40 @@ const variationSchema = new mongoose.Schema(
 const optionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   values: [{ type: String }],
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+});
+
+const imageSchema = new mongoose.Schema({
+  src: {},
 });
 
 const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+    title: {
+      type: String,
       required: true,
     },
-    price: { type: Number, required: true },
-    comparePrice: { type: Number, required: true },
-    chargeTax: { type: Boolean, default: false },
-    productCategory: { type: String, required: true },
-    productType: { type: String },
-    vendor: { type: String, required: true },
-    tags: [String],
-    variants: [variationSchema],
-    options: [optionSchema],
+    body_html: {
+      type: String,
+      required: true,
+    },
+    handle: {
+      type: String,
+      required: true,
+    },
+    vendor: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+    },
+    images: [imageSchema],
   },
   { timestamps: true }
 );

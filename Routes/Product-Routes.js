@@ -1,8 +1,9 @@
 import {
   addProduct,
-  addVariantToProduct,
+  addVariant,
   getAllProducts,
   getProductById,
+  getProductByPagination,
 } from "../Controllers/Product-Controller.js";
 import Product from "../Models/ProductModel.js";
 import express from "express";
@@ -52,5 +53,10 @@ router.post("/addOption", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//Add Variant
+router.post("/addVariant", addVariant);
+
+router.get("/getProducts", getProductByPagination);
 
 export default router;
