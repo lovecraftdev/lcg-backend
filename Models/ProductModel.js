@@ -2,14 +2,26 @@ import mongoose from "mongoose";
 
 const variationSchema = new mongoose.Schema(
   {
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      // required: true,
+    title: {
+      type: String,
+      required: true,
     },
-    title: { type: String, required: true },
-    price: { type: Number, required: true },
-    sku: { type: String, required: true },
+    price: {
+      type: Number,
+      required: true,
+    },
+    sku: {
+      type: String,
+      required: true,
+    },
+    compare_at_price: {
+      type: Number,
+      required: true,
+    },
+    inventory_quantity: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -17,15 +29,11 @@ const variationSchema = new mongoose.Schema(
 const optionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   values: [{ type: String }],
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
 });
 
 const imageSchema = new mongoose.Schema({
-  src: {},
+  alt: { type: String, default: "alt" },
+  src: { type: String, default: "alt" },
 });
 
 const productSchema = new mongoose.Schema(
@@ -35,6 +43,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     body_html: {
+      type: String,
+      required: true,
+    },
+    product_type: {
       type: String,
       required: true,
     },
@@ -48,9 +60,16 @@ const productSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      required: true,
+      default: "Draft",
     },
+    variants: [variationSchema],
     images: [imageSchema],
+    options: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Option",
+      },
+    ],
   },
   { timestamps: true }
 );

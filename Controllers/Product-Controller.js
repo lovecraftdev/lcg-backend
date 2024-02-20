@@ -2,30 +2,24 @@ import Product from "../Models/ProductModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      category,
-      comparePrice,
-      chargeTax,
-      productCategory,
-      productType,
-      vendor,
-      tags,
-    } = req.body;
+    const { title, body_html, product_type, handle, vendor, status, price } =
+      req.body;
 
+    const existingProduct = await Product.findOne({ handle: handle });
+    if (existingProduct) {
+      return res.status(400).json({
+        success: false,
+        message: "Product Already Exists",
+      });
+    }
     const savedProduct = await Product.create({
       title,
-      description,
-      price,
-      category,
-      comparePrice,
-      chargeTax,
-      productCategory,
-      productType,
+      body_html,
+      product_type,
+      handle,
       vendor,
-      tags,
+      status,
+      price,
     });
 
     res
@@ -146,5 +140,31 @@ export const getProductByPagination = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+//Get Product with options
+export const getProductWithOptions = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+
+    const productWithPopulatedOptions = await Product.findById(
+      productId
+    ).populate("options");
+
+    if (!productWithPopulatedOptions) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      product: productWithPopulatedOptions,
+    });
+  } catch (error) {
+    console.error("Error fetching product with options:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

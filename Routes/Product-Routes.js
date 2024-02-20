@@ -4,6 +4,7 @@ import {
   getAllProducts,
   getProductById,
   getProductByPagination,
+  getProductWithOptions,
 } from "../Controllers/Product-Controller.js";
 import Product from "../Models/ProductModel.js";
 import express from "express";
@@ -58,5 +59,7 @@ router.post("/addOption", async (req, res) => {
 router.post("/addVariant", addVariant);
 
 router.get("/getProducts", getProductByPagination);
+
+router.get("/:productId", getProductWithOptions);
 
 export default router;
