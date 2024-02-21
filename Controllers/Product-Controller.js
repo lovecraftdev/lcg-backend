@@ -1,5 +1,7 @@
 import Product from "../Models/ProductModel.js";
 
+//Add Product
+
 export const addProduct = async (req, res) => {
   try {
     const { title, body_html, product_type, handle, vendor, status, price } =
@@ -31,39 +33,6 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const addVariantToProduct = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { size, color, stock } = req.body;
-
-    const product = await Product.findById(productId);
-
-    if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    }
-
-    const newVariant = {
-      size,
-      color,
-      stock,
-    };
-
-    product.variants.push(newVariant);
-    await product.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Variant added to the product",
-      product,
-    });
-  } catch (error) {
-    console.error("Error adding variant:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-};
-
 //Get all products
 export const getAllProducts = async (req, res) => {
   try {
@@ -83,7 +52,7 @@ export const getProductById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const product = await Product.findOne({ _id: id });
+    const product = await Product.findOne({ _id: id }).populate("options");
     res.status(200).json({
       success: true,
       product,
@@ -95,36 +64,6 @@ export const getProductById = async (req, res) => {
 };
 
 //Add Variant to Product
-export const addVariant = async (req, res) => {
-  try {
-    const productId = req.body.productId;
-
-    const product = await Product.findById(productId);
-
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    const { title, price, sku } = req.body;
-
-    const newVariant = {
-      title,
-      price,
-      sku,
-    };
-
-    product.variants.push(newVariant);
-
-    await product.save();
-
-    return res
-      .status(201)
-      .json({ message: "Variant added successfully", product });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
 //get products pagination
 export const getProductByPagination = async (req, res) => {

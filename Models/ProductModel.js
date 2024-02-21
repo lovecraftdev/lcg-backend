@@ -10,30 +10,62 @@ const variationSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    compare_at_price: {
+      type: Number,
+      required: true,
+    },
     sku: {
       type: String,
       required: true,
     },
-    compare_at_price: {
+    option1: {
+      type: String,
+      default: null,
+    },
+    option2: {
+      type: String,
+      default: null,
+    },
+    option3: {
+      type: String,
+      default: null,
+    },
+    option4: {
+      type: String,
+      default: null,
+    },
+    taxable: {
+      type: Boolean,
+      default: false,
+    },
+    weight: {
       type: Number,
+      required: true,
+    },
+    weight_unit: {
+      type: String,
       required: true,
     },
     inventory_quantity: {
       type: Number,
       required: true,
     },
+    // requires_shipping: {
+    //   type: Boolean,
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );
 
-const optionSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  values: [{ type: String }],
-});
-
 const imageSchema = new mongoose.Schema({
   alt: { type: String, default: "alt" },
-  src: { type: String, default: "alt" },
+  src: { type: String },
+  variant_ids: [
+    {
+      type: String,
+    },
+  ],
 });
 
 const productSchema = new mongoose.Schema(
