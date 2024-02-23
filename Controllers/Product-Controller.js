@@ -36,7 +36,7 @@ export const addProduct = async (req, res) => {
 //Get all products
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().limit(20);
     res.status(200).json({
       success: true,
       products,
@@ -67,13 +67,15 @@ export const getProductById = async (req, res) => {
 
 //get products pagination
 export const getProductByPagination = async (req, res) => {
-  const { page } = req.query;
-  const pageSize = 50;
+  const { page, perPage } = req.query;
 
   try {
-    const startIndex = (page - 1) * pageSize;
+    const startIndex = (page - 1) * perPage;
 
-    const paginatedData = await Product.find().skip(startIndex).limit(pageSize);
+    const paginatedData = await Product.find()
+      .sort({ title: 1 })
+      .skip(startIndex)
+      .limit(perPage);
 
     res.json(paginatedData);
   } catch (error) {
@@ -104,6 +106,26 @@ export const getProductWithOptions = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching product with options:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//Search for products
+export const searchProduct = async (req, res) => {
+  try {
+    const searchTerm = req.query.search;
+
+    if (!searchTerm || searchTerm.trim() === "") {
+      return res.status(400).json({ error: "Invalid search term" });
+    }
+
+    const searchResults = await Product.find({
+      title: new RegExp(searchTerm, "i"),
+    });
+
+    res.json(searchResults);
+  } catch (error) {
+    console.error("Error in searchProduct controller:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
