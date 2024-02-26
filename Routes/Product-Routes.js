@@ -6,6 +6,7 @@ import {
   getProductWithOptions,
   searchProduct,
 } from "../Controllers/Product-Controller.js";
+
 import express from "express";
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.get("/getProducts", getProductByPagination);
 router.get("/single-product/:productId", getProductWithOptions);
 
 router.get("/searchProduct", searchProduct);
+
 
 export default router;
