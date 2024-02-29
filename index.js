@@ -8,6 +8,7 @@ import customerRouter from "./Routes/Customer-Routes.js";
 import cors from "cors";
 
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 8010;
 dbConnect();

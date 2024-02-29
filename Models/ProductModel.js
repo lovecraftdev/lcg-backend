@@ -4,19 +4,19 @@ const variationSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      // required: true,
     },
     price: {
       type: Number,
-      required: true,
+      // required: true,
     },
     compare_at_price: {
       type: Number,
-      required: true,
+      // required: true,
     },
     sku: {
       type: String,
-      required: true,
+      // required: true,
     },
     option1: {
       type: String,
@@ -40,15 +40,15 @@ const variationSchema = new mongoose.Schema(
     },
     weight: {
       type: Number,
-      required: true,
+      // required: true,
     },
     weight_unit: {
       type: String,
-      required: true,
+      // required: true,
     },
     inventory_quantity: {
       type: Number,
-      required: true,
+      // required: true,
     },
     // requires_shipping: {
     //   type: Boolean,
@@ -82,10 +82,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    handle: {
-      type: String,
-      required: true,
-    },
+    
     vendor: {
       type: String,
       required: true,

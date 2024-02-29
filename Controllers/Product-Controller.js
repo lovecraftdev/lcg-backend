@@ -1,36 +1,42 @@
 import Product from "../Models/ProductModel.js";
+import s3Upload from '../Middleware/s3aws.js'; 
+
 
 //Add Product
-export const addProduct = async (req, res) => {
+ export const addProduct = async (req, res) => {
   try {
-    const { title, body_html, product_type, handle, vendor, status, price } =
-      req.body;
-
-    const existingProduct = await Product.findOne({ handle: handle });
-    if (existingProduct) {
-      return res.status(400).json({
-        success: false,
-        message: "Product Already Exists",
-      });
-    }
-    const savedProduct = await Product.create({
+    const {
       title,
-      body_html,
-      product_type,
-      handle,
-      vendor,
-      status,
+      description,
       price,
-    });
+      comparePrice,
+      status,
+      productCategory,
+      productType,
+      tags,
+      collections,
+      vendor,
+      tax,
+    } = req.body;
 
-    res
-      .status(201)
-      .json({ message: "Product Added Successfully", savedProduct });
+     // Handle the uploaded files (in req.files)
+     const mediaUrls = await Promise.all(
+      req.files.map(async (file) => {
+        return file.location; // Assuming 'location' is provided by multer-s3
+      })
+    );
+
+     // Here, you can save the product data and mediaUrls to your database or perform any desired actions
+
+    // Respond with success message or any other data
+    res.json({ success: true, message: 'Product added successfully', mediaUrls });
   } catch (error) {
-    console.error("Error adding product:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 };
+
+
 
 //Get all products
 export const getAllProducts = async (req, res) => {
@@ -128,3 +134,4 @@ export const searchProduct = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+

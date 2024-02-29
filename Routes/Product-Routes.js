@@ -8,10 +8,11 @@ import {
 } from "../Controllers/Product-Controller.js";
 
 import express from "express";
+import s3Upload from "../Middleware/s3aws.js";
 
 const router = express.Router();
 
-router.post("/add-product", addProduct);
+router.post("/add-product", s3Upload.array('media'), addProduct);
 
 router.get("/allProducts", getAllProducts);
 
