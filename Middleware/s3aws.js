@@ -16,12 +16,12 @@ const s3 = new S3Client({
 
 
 // Define the S3 bucket name
-// const bucketName = "love-craft-gifts";
+const bucketName = process.env.bucket;
 
 const s3Upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "love-craft-gifts",
+    bucket: bucketName,
     key: (req, file, cb) => {
       cb(null, `${Date.now()}_${file.originalname}`);
     },
