@@ -1,16 +1,23 @@
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
-  title: {
+  first_name: {
     type: String,
     required: true,
   },
-  description: {
+  last_name: {
     type: String,
+    required: true,
+
   },
-  image: {
+  email: {
     type: String,
+    required: true,
   },
+  phone:{
+    type: String,
+    required: true,
+  }
 });
 
 const Category = mongoose.model("Category", categorySchema);
