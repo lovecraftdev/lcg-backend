@@ -2,22 +2,10 @@ import mongoose from "mongoose";
 
 const variationSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      // required: true,
-    },
-    price: {
-      type: Number,
-      // required: true,
-    },
-    compare_at_price: {
-      type: Number,
-      // required: true,
-    },
-    sku: {
-      type: String,
-      // required: true,
-    },
+    title: String,
+    price: Number,
+    compare_at_price: Number,
+    sku: String,
     option1: {
       type: String,
       default: null,
@@ -38,34 +26,20 @@ const variationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    weight: {
-      type: Number,
-      // required: true,
-    },
-    weight_unit: {
-      type: String,
-      // required: true,
-    },
-    inventory_quantity: {
-      type: Number,
-      // required: true,
-    },
-    // requires_shipping: {
-    //   type: Boolean,
-    //   required: true,
-    // },
+    weight: Number,
+    weight_unit: String,
+    inventory_quantity: Number,
   },
   { timestamps: true }
 );
 
 const imageSchema = new mongoose.Schema({
-  alt: { type: String, default: "alt" },
-  src: { type: String },
-  variant_ids: [
-    {
-      type: String,
-    },
-  ],
+  alt: {
+    type: String,
+    default: "alt",
+  },
+  src: String,
+  variant_ids: [{ type: String }],
 });
 
 const productSchema = new mongoose.Schema(
@@ -82,7 +56,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    
     vendor: {
       type: String,
       required: true,

@@ -1,44 +1,73 @@
 import Product from "../Models/ProductModel.js";
-import s3Upload from '../Middleware/s3aws.js'; 
-
 
 //Add Product
- export const addProduct = async (req, res) => {
+export const addProduct = async (req, res) => {
   try {
     const {
       title,
-      description,
+      body_html,
+      variants,
+      options,
       price,
       comparePrice,
       status,
       productCategory,
-      productType,
+      product_type,
       tags,
       collections,
       vendor,
       tax,
     } = req.body;
 
-     // Handle the uploaded files (in req.files)
-     const mediaUrls = await Promise.all(
-      req.files.map(async (file) => {
-        return file.location; // Assuming 'location' is provided by multer-s3
-      })
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "No files uploaded. Please provide at least one file.",
+      });
+    }
+
+    const mediaUrls = await Promise.all(
+      req.files.map(async (file, index) => ({
+        src: file.location,
+        alt: `${title} | Love Craft Gifts`,
+        position: index + 1,
+      }))
     );
 
-     // Here, you can save the product data and mediaUrls to your database or perform any desired actions
+    const product = await Product.create({
+      title,
+      body_html,
+      price,
+      comparePrice,
+      status,
+      productCategory,
+      product_type,
+      tags,
+      collections,
+      vendor,
+      tax,
+      options,
+      variants,
+      images: mediaUrls,
+    });
 
-    // Respond with success message or any other data
-    res.json({ success: true, message: 'Product added successfully', mediaUrls });
+    res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      product,
+    });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ success: false, error: 'Internal Server Error' });
+    console.error("Error:", error);
+
+    if (error.name === "ValidationError") {
+      res.status(400).json({ success: false, error: error.message });
+    } else {
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
   }
 };
 
-
-
-//Get all products
+//Get all products  
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().limit(20);
@@ -135,3 +164,25 @@ export const searchProduct = async (req, res) => {
   }
 };
 
+// -----------------------Delete Product-------------------------
+
+export const deleteProduct = async (req, res) => {
+  const idsToDelete = req.body.ids;
+
+  try {
+    const { deletedCount } = await Product.deleteMany({
+      _id: { $in: idsToDelete },
+    });
+
+    if (deletedCount > 0) {
+      res.status(200).json({ message: "Products deleted successfully" });
+    } else {
+      res
+        .status(404)
+        .json({ message: "No products found with the specified IDs" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

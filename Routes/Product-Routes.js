@@ -1,5 +1,6 @@
 import {
   addProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
   getProductByPagination,
@@ -23,6 +24,8 @@ router.get("/getProducts", getProductByPagination);
 router.get("/single-product/:productId", getProductWithOptions);
 
 router.get("/searchProduct", searchProduct);
+
+router.delete("/deleteProduct", deleteProduct);
 
 
 export default router;
