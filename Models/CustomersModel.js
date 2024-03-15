@@ -27,7 +27,8 @@ const addressesSchema = new mongoose.Schema({
   },
   country: {
     type: String,
-    },
+    default: "India",
+  },
   zip: {
     type: Number,
     required: true,
@@ -36,38 +37,33 @@ const addressesSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-})
+});
 
-const CustomerSchema = new mongoose.Schema({
-  // Define your Customer schema fields here
-  first_name: {
-    type: String,
-    required: true,
+const CustomerSchema = new mongoose.Schema(
+  {
+    // Define your Customer schema fields here
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    addresses: [addressesSchema],
+    default_address: addressesSchema,
   },
-  last_name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone:{
-    type: String,
-    required: true,
-  },
-  addresses: [addressesSchema],
-  
-
-},{ timestamps: true });
-
-
+  { timestamps: true }
+);
 
 const Customer = mongoose.model("Customer", CustomerSchema);
 
 export default Customer;
-
-
-
-
-

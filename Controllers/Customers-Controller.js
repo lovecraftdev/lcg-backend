@@ -41,7 +41,6 @@ export const addCustomer = async (req, res) => {
         .status(400)
         .json({ message: "Customer with this Email already exists" });
     }
-
     // Create a new customer
     const newCustomer = new Customer({
       first_name,
@@ -49,6 +48,7 @@ export const addCustomer = async (req, res) => {
       email,
       phone,
       addresses,
+      default_address: { ...addresses },
     });
 
     // Save the customer to the database
@@ -58,5 +58,25 @@ export const addCustomer = async (req, res) => {
   } catch (error) {
     console.error("Error creating customer:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//Get Customer By Pagination
+
+export const getCustomersByPagination = async (req, res) => {
+  const { page, perPage } = req.query;
+
+  try {
+    const startIndex = (page - 1) * perPage;
+
+    const paginatedData = await Customer.find({})
+      .sort({ created_at: -1 })
+      .skip(startIndex)
+      .limit(perPage);
+
+    res.json(paginatedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
