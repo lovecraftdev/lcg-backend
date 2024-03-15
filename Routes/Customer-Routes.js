@@ -2,7 +2,6 @@ import express from "express";
 import {
   addCustomer,
   deleteCustomers,
-  getAllCustomer,
   getCustomersByPagination,
   searchCustomers,
 } from "../Controllers/Customers-Controller.js";
