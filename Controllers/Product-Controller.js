@@ -26,6 +26,15 @@ export const addProduct = async (req, res) => {
       tax,
     } = req.body;
 
+    // Check if the product handle already exists
+    const existingProduct = await Product.findOne({ handle });
+    if (existingProduct) {
+      return res.status(400).json({
+        success: false,
+        error: "Product handle already exists. Please use a different handle.",
+      });
+    }
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
