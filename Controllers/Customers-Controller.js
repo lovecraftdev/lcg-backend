@@ -80,3 +80,49 @@ export const getCustomersByPagination = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+// ---------------Delete customer--------------------
+
+export const deleteCustomers = async (req, res) => {
+  try {
+    const { ids } = req.body; // Extract the ids directly from the request body
+
+    // Delete customers by their IDs
+    const deletedCustomers = await Customer.deleteMany({ _id: { $in: ids } });
+
+    if (deletedCustomers.deletedCount === 0) {
+      return res.status(404).json({ message: "Customers not found" });
+    }
+
+    res.status(200).json({ message: "Customers deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting customers:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+// ---------------------Search API---------------
+
+export const searchCustomers = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ error: 'Missing query parameter' });
+  }
+
+  try {
+    const searchRegex = new RegExp(query, 'i');
+    const searchResults = await Customer.find({
+      $or: [
+        { name: { $regex: searchRegex } },
+        { email: { $regex: searchRegex } },
+      ],
+    });
+
+    res.json(searchResults);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
