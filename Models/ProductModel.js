@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 const variationSchema = new mongoose.Schema(
   {
     title: String,
-    price: Number,
-    compare_at_price: Number,
+    price: { type: Number, required: true },
+    compare_at_price: { type: Number, required: true },
     sku: String,
+    barcode: String,
+
     option1: {
       type: String,
       default: null,
@@ -22,13 +24,13 @@ const variationSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    taxable: {
-      type: Boolean,
-      default: false,
-    },
     weight: Number,
-    weight_unit: String,
+    weight_unit: {
+      type: String,
+      default: "kg",
+    },
     inventory_quantity: Number,
+    imageId: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
   },
   { timestamps: true }
 );
@@ -39,7 +41,17 @@ const imageSchema = new mongoose.Schema({
     default: "alt",
   },
   src: String,
-  variant_ids: [{ type: String }],
+});
+
+const optionSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+  values: [
+    {
+      id: Number,
+      value: String,
+    },
+  ],
 });
 
 const productSchema = new mongoose.Schema(
@@ -48,9 +60,41 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    handle: {
+      type: String,
+      required: true,
+    },
     body_html: {
       type: String,
       required: true,
+    },
+    price: {
+      type: Number,
+      default: null,
+    },
+    comparePrice: {
+      type: Number,
+      default: null,
+    },
+    available: {
+      type: Number,
+      default: null,
+    },
+    sku: {
+      type: String,
+      default: null,
+    },
+    barcode: {
+      type: String,
+      default: null,
+    },
+    weight: {
+      type: Number,
+      default: null,
+    },
+    weight_unit: {
+      type: String,
+      default: "kg",
     },
     product_type: {
       type: String,
@@ -66,12 +110,7 @@ const productSchema = new mongoose.Schema(
     },
     variants: [variationSchema],
     images: [imageSchema],
-    options: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Option",
-      },
-    ],
+    options: [optionSchema],
   },
   { timestamps: true }
 );
