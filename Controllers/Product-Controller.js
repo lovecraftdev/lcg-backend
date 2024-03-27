@@ -26,7 +26,7 @@ export const addProduct = async (req, res) => {
       tax,
     } = req.body;
 
-    // Check if the product handle already exists
+    // Check if the product handle already exist
     const existingProduct = await Product.findOne({ handle });
     if (existingProduct) {
       return res.status(400).json({
@@ -120,6 +120,7 @@ export const getProductById = async (req, res) => {
 };
 
 //Add Variant to Product
+
 
 //get products pagination
 export const getProductByPagination = async (req, res) => {

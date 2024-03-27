@@ -81,7 +81,6 @@ export const getCustomersByPagination = async (req, res) => {
   }
 };
 
-
 // ---------------Delete customer--------------------
 
 export const deleteCustomers = async (req, res) => {
@@ -102,27 +101,26 @@ export const deleteCustomers = async (req, res) => {
   }
 };
 
-
 // ---------------------Search API---------------
 
 export const searchCustomers = async (req, res) => {
   const { query } = req.query;
 
   if (!query) {
-    return res.status(400).json({ error: 'Missing query parameter' });
+    return res.status(400).json({ error: "Missing query parameter" });
   }
 
   try {
-    const searchRegex = new RegExp(query, 'i');
+    const searchRegex = new RegExp(query, "i");
     const searchResults = await Customer.find({
       $or: [
-        { name: { $regex: searchRegex } },
-        { email: { $regex: searchRegex } },
+        { first_name: { $regex: searchRegex } },
+        { last_name: { $regex: searchRegex } },
       ],
-    });
+      });
 
     res.json(searchResults);
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
