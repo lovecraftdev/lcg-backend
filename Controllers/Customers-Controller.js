@@ -19,11 +19,8 @@ export const addCustomer = async (req, res) => {
 
     if (
       (!first_name,
-      !last_name,
-      !email,
       !phone,
       !addresses.first_name,
-      !addresses.last_name,
       !addresses.address1,
       !addresses.city,
       !addresses.province,
@@ -34,14 +31,14 @@ export const addCustomer = async (req, res) => {
         .json({ success: false, message: "Please fill out the details." });
     }
 
-    // Check if the customer with the same email already exists
-    const existingCustomer = await Customer.findOne({ email });
+    const existingCustomer = await Customer.findOne({ phone });
     if (existingCustomer) {
-      return res
-        .status(400)
-        .json({ message: "Customer with this Email already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "Customer with this Phone Number already exists",
+      });
     }
-    // Create a new customer
+
     const newCustomer = new Customer({
       first_name,
       last_name,
@@ -51,13 +48,45 @@ export const addCustomer = async (req, res) => {
       default_address: { ...addresses },
     });
 
-    // Save the customer to the database
-    await newCustomer.save();
+    const customer = await newCustomer.save();
 
-    res.status(201).json("Customer added sucessfully");
+    res
+      .status(201)
+      .json({ success: true, message: "Customer added sucessfully", customer });
   } catch (error) {
     console.error("Error creating customer:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//Update contact info
+export const updateCustomerContact = async (req, res) => {
+  const { customerId } = req.params;
+  const { email, phone } = req.body;
+
+  try {
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customerId,
+      { email, phone },
+      { new: true }
+    );
+
+    if (!updatedCustomer) {
+      console.log("Customer not found");
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Customer Updated Successfully",
+      updatedCustomer,
+    });
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -74,13 +103,12 @@ export const getCustomersByPagination = async (req, res) => {
       .skip(startIndex)
       .limit(perPage);
 
-    res.json(paginatedData);
+    res.status(200).json(paginatedData);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
-
 
 // ---------------Delete customer--------------------
 
@@ -102,18 +130,17 @@ export const deleteCustomers = async (req, res) => {
   }
 };
 
-
 // ---------------------Search API---------------
 
 export const searchCustomers = async (req, res) => {
   const { query } = req.query;
 
   if (!query) {
-    return res.status(400).json({ error: 'Missing query parameter' });
+    return res.status(400).json({ error: "Missing query parameter" });
   }
 
   try {
-    const searchRegex = new RegExp(query, 'i');
+    const searchRegex = new RegExp(query, "i");
     const searchResults = await Customer.find({
       $or: [
         { name: { $regex: searchRegex } },
@@ -123,6 +150,26 @@ export const searchCustomers = async (req, res) => {
 
     res.json(searchResults);
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//Get Customer
+export const getCustomer = async (req, res) => {
+  try {
+    const { customerID } = req.params;
+
+    const customer = await Customer.findById(customerID);
+
+    res.status(200).json({
+      success: true,
+      customer,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

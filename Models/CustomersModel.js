@@ -4,14 +4,14 @@ const addressesSchema = new mongoose.Schema({
   first_name: {
     type: String,
     required: true,
+    trim: true,
   },
   last_name: {
     type: String,
-    required: true,
+    trim: true,
   },
   company: {
     type: String,
-    required: true,
   },
   address1: {
     type: String,
@@ -45,18 +45,28 @@ const CustomerSchema = new mongoose.Schema(
     first_name: {
       type: String,
       required: true,
+      trim: true,
     },
     last_name: {
       type: String,
-      required: true,
+      trim: true,
     },
     email: {
       type: String,
-      required: true,
+      trim: true,
     },
     phone: {
       type: String,
       required: true,
+      trim: true,
+    },
+    orders_count: {
+      type: Number,
+      default: 0,
+    },
+    total_spent: {
+      type: Number,
+      default: 0,
     },
     addresses: [addressesSchema],
     default_address: addressesSchema,
